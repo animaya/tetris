@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 * {
     margin: 0;
     padding: 0;
@@ -5,125 +7,315 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Press Start 2P', monospace;
+    background: #0a0a0a;
+    background-image:
+        repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.15),
+            rgba(0, 0, 0, 0.15) 1px,
+            transparent 1px,
+            transparent 2px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            rgba(0, 0, 0, 0.15),
+            rgba(0, 0, 0, 0.15) 1px,
+            transparent 1px,
+            transparent 2px
+        );
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     padding: 20px;
+    position: relative;
 }
 
+/* Retro scanline effect */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 255, 255, 0.03) 0px,
+        rgba(0, 0, 0, 0.05) 1px,
+        rgba(0, 0, 0, 0.05) 2px,
+        rgba(0, 255, 255, 0.03) 3px
+    );
+    pointer-events: none;
+    z-index: 1000;
+    animation: scanline 8s linear infinite;
+}
+
+@keyframes scanline {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(10px); }
+}
+
+/* Arcade cabinet container */
 .game-container {
     display: flex;
-    gap: 30px;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+    gap: 40px;
+    background: #1a1a2e;
+    padding: 40px;
+    border: 8px solid #0f3460;
+    box-shadow:
+        0 0 20px rgba(0, 255, 255, 0.3),
+        0 0 40px rgba(255, 0, 255, 0.2),
+        inset 0 0 30px rgba(0, 0, 0, 0.5);
     align-items: flex-start;
+    position: relative;
+}
+
+/* Corner decorations */
+.game-container::before,
+.game-container::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #00ffff;
+}
+
+.game-container::before {
+    top: 10px;
+    left: 10px;
+    border-right: none;
+    border-bottom: none;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.game-container::after {
+    bottom: 10px;
+    right: 10px;
+    border-left: none;
+    border-top: none;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
 .game-info {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    min-width: 200px;
+    min-width: 280px;
 }
 
 h1 {
-    color: #667eea;
-    font-size: 2.5em;
+    color: #00ffff;
+    font-size: 2em;
     text-align: center;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    text-shadow:
+        0 0 10px #00ffff,
+        0 0 20px #00ffff,
+        0 0 30px #ff00ff,
+        3px 3px 0px #ff00ff;
+    letter-spacing: 3px;
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        text-shadow:
+            0 0 10px #00ffff,
+            0 0 20px #00ffff,
+            0 0 30px #ff00ff,
+            3px 3px 0px #ff00ff;
+    }
+    to {
+        text-shadow:
+            0 0 20px #00ffff,
+            0 0 30px #00ffff,
+            0 0 40px #ff00ff,
+            3px 3px 0px #ff00ff;
+    }
 }
 
 .score-section {
-    background: #f0f0f0;
+    background: #16213e;
     padding: 15px;
-    border-radius: 10px;
+    border: 3px solid #ff00ff;
+    box-shadow:
+        0 0 10px rgba(255, 0, 255, 0.5),
+        inset 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .score-section p {
-    font-size: 1.2em;
-    margin: 8px 0;
-    color: #333;
+    font-size: 0.7em;
+    margin: 10px 0;
+    color: #ffff00;
+    text-shadow: 0 0 5px #ffff00;
+    letter-spacing: 1px;
 }
 
 .score-section span {
     font-weight: bold;
-    color: #667eea;
+    color: #00ff00;
+    text-shadow: 0 0 10px #00ff00;
 }
 
 .controls {
-    background: #f0f0f0;
+    background: #16213e;
     padding: 15px;
-    border-radius: 10px;
+    border: 3px solid #ffff00;
+    box-shadow:
+        0 0 10px rgba(255, 255, 0, 0.5),
+        inset 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .controls h3 {
-    margin-bottom: 10px;
-    color: #667eea;
+    margin-bottom: 15px;
+    color: #ffff00;
+    font-size: 0.8em;
+    text-shadow: 0 0 10px #ffff00;
+    text-align: center;
 }
 
 .controls p {
-    margin: 5px 0;
-    font-size: 0.9em;
-    color: #555;
+    margin: 8px 0;
+    font-size: 0.6em;
+    color: #00ffff;
+    text-shadow: 0 0 5px #00ffff;
+    letter-spacing: 1px;
 }
 
+/* CRT screen effect for canvas */
 #tetris {
-    border: 3px solid #333;
+    border: 6px solid #0f3460;
     background: #000;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    box-shadow:
+        0 0 20px rgba(0, 255, 255, 0.4),
+        0 0 40px rgba(255, 0, 255, 0.3),
+        inset 0 0 20px rgba(0, 255, 255, 0.1);
+    position: relative;
+}
+
+/* Screen glare effect */
+#tetris::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        transparent 50%
+    );
+    pointer-events: none;
 }
 
 .next-piece {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
+    background: #16213e;
+    padding: 15px;
+    border: 3px solid #00ff00;
+    box-shadow:
+        0 0 10px rgba(0, 255, 0, 0.5),
+        inset 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .next-piece h3 {
-    color: #667eea;
+    color: #00ff00;
     text-align: center;
+    font-size: 0.8em;
+    text-shadow: 0 0 10px #00ff00;
+    letter-spacing: 2px;
 }
 
 #nextPiece {
-    border: 2px solid #333;
+    border: 3px solid #0f3460;
     background: #000;
-    border-radius: 5px;
+    box-shadow:
+        0 0 10px rgba(0, 255, 255, 0.3),
+        inset 0 0 10px rgba(0, 255, 255, 0.1);
 }
 
+/* Retro arcade buttons */
 .btn {
-    padding: 12px 24px;
-    font-size: 1.1em;
+    padding: 15px 30px;
+    font-size: 0.7em;
     font-weight: bold;
-    color: white;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    border-radius: 8px;
+    font-family: 'Press Start 2P', monospace;
+    color: #000;
+    background: #ffff00;
+    border: 4px solid #ff00ff;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: all 0.1s;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow:
+        0 0 10px rgba(255, 255, 0, 0.5),
+        0 4px 0 #cc00cc,
+        0 8px 0 #990099;
+    position: relative;
 }
 
 .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    background: #00ffff;
+    color: #000;
+    box-shadow:
+        0 0 20px rgba(0, 255, 255, 0.8),
+        0 4px 0 #0099cc,
+        0 8px 0 #006699;
+    border-color: #00ff00;
 }
 
 .btn:active {
-    transform: translateY(0);
+    transform: translateY(4px);
+    box-shadow:
+        0 0 10px rgba(255, 255, 0, 0.5),
+        0 0 0 #cc00cc,
+        0 4px 0 #990099;
 }
 
 .btn:disabled {
-    opacity: 0.5;
+    opacity: 0.3;
     cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Pixel corners for buttons */
+.btn::before,
+.btn::after {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #ff00ff;
+}
+
+.btn::before {
+    top: -4px;
+    left: -4px;
+}
+
+.btn::after {
+    bottom: -4px;
+    right: -4px;
 }
 
 @media (max-width: 768px) {
     .game-container {
         flex-direction: column;
         align-items: center;
+        padding: 20px;
+        gap: 20px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    .controls p,
+    .score-section p {
+        font-size: 0.5em;
     }
 }
