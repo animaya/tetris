@@ -46,8 +46,42 @@ let lastDropTime = 0;
 const scoreElement = document.getElementById('score');
 const linesElement = document.getElementById('lines');
 const levelElement = document.getElementById('level');
+const highScoreElement = document.getElementById('highScore');
+const highScoresListElement = document.getElementById('highScoresList');
 const startBtn = document.getElementById('startBtn');
 const pauseBtn = document.getElementById('pauseBtn');
+
+// High score management
+let highScores = loadHighScores();
+let currentHighScore = highScores.length > 0 ? highScores[0] : 0;
+
+// High score functions
+function loadHighScores() {
+    const saved = localStorage.getItem('tetrisHighScores');
+    return saved ? JSON.parse(saved) : [];
+}
+
+function saveHighScores(scores) {
+    localStorage.setItem('tetrisHighScores', JSON.stringify(scores));
+}
+
+function addHighScore(newScore) {
+    highScores.push(newScore);
+    highScores.sort((a, b) => b - a);
+    highScores = highScores.slice(0, 5); // Keep top 5
+    saveHighScores(highScores);
+    currentHighScore = highScores[0];
+}
+
+function displayHighScores() {
+    highScoresListElement.innerHTML = '';
+    highScores.forEach(score => {
+        const li = document.createElement('li');
+        li.textContent = score.toLocaleString();
+        highScoresListElement.appendChild(li);
+    });
+    highScoreElement.textContent = currentHighScore.toLocaleString();
+}
 
 // Event listeners
 startBtn.addEventListener('click', startGame);
@@ -300,6 +334,12 @@ function updateScore() {
     scoreElement.textContent = score;
     linesElement.textContent = lines;
     levelElement.textContent = level;
+
+    // Update high score display if current score exceeds it
+    if (score > currentHighScore) {
+        currentHighScore = score;
+        highScoreElement.textContent = currentHighScore.toLocaleString();
+    }
 }
 
 // Draw everything
@@ -359,6 +399,14 @@ function gameOver() {
     gameRunning = false;
     gamePaused = false;
 
+    // Check if it's a high score
+    let isNewHighScore = false;
+    if (score > 0 && (highScores.length < 5 || score > highScores[highScores.length - 1])) {
+        addHighScore(score);
+        displayHighScores();
+        isNewHighScore = highScores.indexOf(score) === 0; // Is it the top score?
+    }
+
     ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -367,10 +415,19 @@ function gameOver() {
     ctx.textAlign = 'center';
     ctx.shadowColor = '#00FFFF';
     ctx.shadowBlur = 10;
-    ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 - 30);
+    ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 - 50);
+
+    if (isNewHighScore) {
+        ctx.fillStyle = '#FF00FF';
+        ctx.shadowColor = '#FF00FF';
+        ctx.font = '10px "Press Start 2P", monospace';
+        ctx.fillText('NEW HIGH SCORE!', canvas.width / 2, canvas.height / 2 - 15);
+    }
+
     ctx.font = '12px "Press Start 2P", monospace';
     ctx.fillStyle = '#FFFF00';
-    ctx.fillText(`SCORE: ${score}`, canvas.width / 2, canvas.height / 2 + 10);
+    ctx.shadowColor = '#FFFF00';
+    ctx.fillText(`SCORE: ${score}`, canvas.width / 2, canvas.height / 2 + 20);
     ctx.shadowBlur = 0;
 
     startBtn.style.display = 'block';
@@ -380,3 +437,4 @@ function gameOver() {
 
 // Initial draw
 draw();
+displayHighScores();
