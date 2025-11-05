@@ -183,6 +183,15 @@ h1 {
     letter-spacing: 1px;
 }
 
+.controls p.hint {
+    color: #ff00ff;
+    text-shadow: 0 0 5px #ff00ff;
+    font-size: 0.5em;
+    margin-top: 15px;
+    border-top: 1px solid #ff00ff;
+    padding-top: 10px;
+}
+
 /* CRT screen effect for canvas */
 #tetris {
     border: 6px solid #0f3460;

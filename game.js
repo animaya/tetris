@@ -96,6 +96,59 @@ function drawBoard() {
     }
 }
 
+// Calculate ghost piece position
+function getGhostPiecePosition() {
+    if (!currentPiece) return null;
+
+    const ghostPiece = { ...currentPiece, y: currentPiece.y };
+
+    // Drop the ghost piece until it collides
+    while (!collides(ghostPiece, 0, 1)) {
+        ghostPiece.y++;
+    }
+
+    return ghostPiece;
+}
+
+// Draw ghost piece
+function drawGhostPiece() {
+    if (!currentPiece || gamePaused) return;
+
+    const ghostPiece = getGhostPiecePosition();
+    if (!ghostPiece) return;
+
+    // Only draw ghost if it's below the current piece
+    if (ghostPiece.y <= currentPiece.y) return;
+
+    ctx.globalAlpha = 0.3;
+    ghostPiece.shape.forEach((row, dy) => {
+        row.forEach((value, dx) => {
+            if (value) {
+                const x = ghostPiece.x + dx;
+                const y = ghostPiece.y + dy;
+                const color = COLORS[value];
+
+                if (color) {
+                    // Draw just the outline for ghost piece
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+
+                    // Draw a light fill
+                    ctx.fillStyle = color;
+                    ctx.fillRect(
+                        x * BLOCK_SIZE + 2,
+                        y * BLOCK_SIZE + 2,
+                        BLOCK_SIZE - 4,
+                        BLOCK_SIZE - 4
+                    );
+                }
+            }
+        });
+    });
+    ctx.globalAlpha = 1.0;
+}
+
 // Draw current piece
 function drawPiece() {
     if (!currentPiece) return;
@@ -305,6 +358,7 @@ function updateScore() {
 // Draw everything
 function draw() {
     drawBoard();
+    drawGhostPiece(); // Draw ghost piece first (behind current piece)
     drawPiece();
 }
 
