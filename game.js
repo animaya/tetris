@@ -10,13 +10,13 @@ const COLS = 10;
 const BLOCK_SIZE = 30;
 const COLORS = [
     null,
-    '#FF0D72', // I
-    '#0DC2FF', // J
-    '#0DFF72', // L
-    '#F538FF', // O
-    '#FF8E0D', // S
-    '#FFE138', // T
-    '#3877FF'  // Z
+    '#00FFFF', // I - Cyan
+    '#FF00FF', // J - Magenta
+    '#FFFF00', // L - Yellow
+    '#00FF00', // O - Green
+    '#FF0066', // S - Hot Pink
+    '#FF6600', // T - Orange
+    '#0066FF'  // Z - Blue
 ];
 
 // Tetromino shapes
@@ -346,7 +346,7 @@ function togglePause() {
     if (!gameRunning) return;
 
     gamePaused = !gamePaused;
-    pauseBtn.textContent = gamePaused ? 'Resume' : 'Pause';
+    pauseBtn.textContent = gamePaused ? 'RESUME' : 'PAUSE';
 
     if (!gamePaused) {
         lastDropTime = performance.now();
@@ -362,15 +362,19 @@ function gameOver() {
     ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 30px Arial';
+    ctx.fillStyle = '#00FFFF';
+    ctx.font = 'bold 20px "Press Start 2P", monospace';
     ctx.textAlign = 'center';
-    ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 - 20);
-    ctx.font = '20px Arial';
-    ctx.fillText(`Score: ${score}`, canvas.width / 2, canvas.height / 2 + 20);
+    ctx.shadowColor = '#00FFFF';
+    ctx.shadowBlur = 10;
+    ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 - 30);
+    ctx.font = '12px "Press Start 2P", monospace';
+    ctx.fillStyle = '#FFFF00';
+    ctx.fillText(`SCORE: ${score}`, canvas.width / 2, canvas.height / 2 + 10);
+    ctx.shadowBlur = 0;
 
     startBtn.style.display = 'block';
-    startBtn.textContent = 'Restart Game';
+    startBtn.textContent = 'PLAY AGAIN';
     pauseBtn.style.display = 'none';
 }
 
