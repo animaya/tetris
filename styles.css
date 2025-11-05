@@ -302,6 +302,12 @@ h1 {
     right: -4px;
 }
 
+.sound-btn {
+    margin-top: 10px;
+    font-size: 0.6em;
+    padding: 10px 20px;
+}
+
 @media (max-width: 768px) {
     .game-container {
         flex-direction: column;
