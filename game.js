@@ -50,6 +50,105 @@ const highScoreElement = document.getElementById('highScore');
 const highScoresListElement = document.getElementById('highScoresList');
 const startBtn = document.getElementById('startBtn');
 const pauseBtn = document.getElementById('pauseBtn');
+const soundBtn = document.getElementById('soundBtn');
+
+// Audio context for sound effects
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+let soundEnabled = true;
+
+// Sound effects generator
+const sounds = {
+    move: () => {
+        if (!soundEnabled) return;
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.frequency.value = 200;
+        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.05);
+    },
+
+    rotate: () => {
+        if (!soundEnabled) return;
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.08);
+        gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.08);
+    },
+
+    drop: () => {
+        if (!soundEnabled) return;
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.15);
+        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.15);
+    },
+
+    lineClear: () => {
+        if (!soundEnabled) return;
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+        oscillator.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.2);
+        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.2);
+    },
+
+    gameOver: () => {
+        if (!soundEnabled) return;
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.5);
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5);
+    }
+};
+
+// Toggle sound
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    soundBtn.textContent = soundEnabled ? 'SOUND: ON' : 'SOUND: OFF';
+}
 
 // High score management
 let highScores = loadHighScores();
@@ -86,6 +185,7 @@ function displayHighScores() {
 // Event listeners
 startBtn.addEventListener('click', startGame);
 pauseBtn.addEventListener('click', togglePause);
+soundBtn.addEventListener('click', toggleSound);
 document.addEventListener('keydown', handleKeyPress);
 
 // Create empty board
@@ -270,6 +370,7 @@ function clearLines() {
     }
 
     if (linesCleared > 0) {
+        sounds.lineClear();
         lines += linesCleared;
         score += linesCleared * 100 * level;
         level = Math.floor(lines / 10) + 1;
@@ -292,8 +393,10 @@ function move(direction) {
 
     if (direction === 'left' && !collides(currentPiece, -1, 0)) {
         currentPiece.x--;
+        sounds.move();
     } else if (direction === 'right' && !collides(currentPiece, 1, 0)) {
         currentPiece.x++;
+        sounds.move();
     } else if (direction === 'down') {
         if (!collides(currentPiece, 0, 1)) {
             currentPiece.y++;
@@ -315,6 +418,7 @@ function hardDrop() {
         currentPiece.y++;
         score += 2;
     }
+    sounds.drop();
     updateScore();
     lockPiece();
     draw();
@@ -327,6 +431,7 @@ function rotatePiece() {
     const rotated = rotate(currentPiece);
     if (!collides(rotated)) {
         currentPiece = rotated;
+        sounds.rotate();
         draw();
     }
 }
@@ -452,6 +557,7 @@ function togglePause() {
 function gameOver() {
     gameRunning = false;
     gamePaused = false;
+    sounds.gameOver();
 
     // Check if it's a high score
     let isNewHighScore = false;
